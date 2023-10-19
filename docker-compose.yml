@@ -1,0 +1,26 @@
+version: '4.0'
+services:
+  # mongodb service
+  mongo_db: 
+    container_name: mongodb_container 
+    image: mongo:latest 
+    restart: always
+    command: mongod --bind_ip 0.0.0.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_db:/data/db
+
+  # nodejs api service
+  api:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo_db:27017/docker_db
+      - DB_NAME=docker_db
+    depends_on:
+      - mongo_db
+volumes:
+  mongo_db: {}
